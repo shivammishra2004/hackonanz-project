@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import axios from 'axios';
 // import XSvg from "../../../components/svgs/X";
 import MySvg from "../../../components/svgs/Dusk.svg";
 
@@ -25,21 +25,20 @@ const LoginPage = () => {
 	} = useMutation({
 		mutationFn: async ({ username, password }) => {
 			try {
-				const res = await fetch("https://hackonanz-project.onrender.com/api/auth/login", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
+				const res = await axios.get("https://hackonanz-project.onrender.com/api/auth/login", {
+					params: {
+						username,
+						password,
 					},
-					body: JSON.stringify({ username, password }),
 				});
 
-				const data = await res.json();
-
-				if (!res.ok) {
-					throw new Error(data.error || "Something went wrong");
+				if (res.status !== 200) {
+					throw new Error(res.data.error || "Something went wrong");
 				}
+
+				return res.data; // return the response data if needed
 			} catch (error) {
-				throw new Error(error);
+				throw new Error(error.response?.data.error || "Something went wrong");
 			}
 		},
 		onSuccess: () => {

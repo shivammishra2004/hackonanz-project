@@ -11,6 +11,7 @@ import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
 
 import { Toaster } from "react-hot-toast";
+import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 
@@ -20,16 +21,13 @@ function App() {
 		queryKey: ["authUser"],
 		queryFn: async () => {
 			try {
-				const res = await fetch("https://hackonanz-project.onrender.com/api/auth/me");
-				const data = await res.json();
-				if (data.error) return null;
-				if (!res.ok) {
-					throw new Error(data.error || "Something went wrong");
-				}
-				console.log("authUser is here:", data);
-				return data;
+				const res = await axios.get("/api/auth/me");
+	
+				if (res.data.error) return null; // Check for error in response data
+				return res.data; // Return the data if the request was successful
 			} catch (error) {
-				throw new Error(error);
+				// Handle error
+				throw new Error(error.response?.data.error || "Something went wrong");
 			}
 		},
 		retry: false,

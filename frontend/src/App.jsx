@@ -21,7 +21,7 @@ function App() {
 		queryKey: ["authUser"],
 		queryFn: async () => {
 			try {
-				const res = await axios.get("/api/auth/me");
+				const res = await axios.get("https://hackonanz-project.onrender.com/api/auth/me");
 	
 				if (res.data.error) return null; // Check for error in response data
 				return res.data; // Return the data if the request was successful
